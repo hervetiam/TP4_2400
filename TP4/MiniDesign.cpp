@@ -1,5 +1,6 @@
 #include "affichage.h"
 #include "nuage.h"
+#include "surface.h"
 #include "surfaceParOrdreID.h"
 #include "surfaceParOrdreDistanceMinimale.h"
 #include "affichageOrtheseParTexture.h"
@@ -121,7 +122,7 @@ int main(int argc, char* argv[]) {
     AffichageOrthese* affichage = nullptr;
 
     StrategieSurface* strategie = nullptr;
-    vector<pair<int,int>> surfaces;
+    vector<Surface> surfaces;  // CHANGÉ: vector<Surface> au lieu de vector<pair<int,int>>
 
     // Menu
     while (true) {
@@ -174,18 +175,18 @@ int main(int argc, char* argv[]) {
         }
 
         else if (cmd == "d") {
-        deplacerPoint(points);
+            deplacerPoint(points);
         }
         
         else if (cmd == "c1") {
             strategie = new StrategieParOrdreID();
-            strategie->creerSurfaces(points, surfaces);
+            strategie->creerSurfaces(points, nuages, surfaces);
             delete strategie;
         }
         
         else if (cmd == "c2") {
             strategie = new StrategieParDistanceMin();
-            strategie->creerSurfaces(points, surfaces);
+            strategie->creerSurfaces(points, nuages, surfaces);
             delete strategie;
         }        
         else if (cmd == "s") {

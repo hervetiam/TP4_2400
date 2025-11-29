@@ -18,5 +18,5 @@ class Point {
 
 
 std::vector<Point> creerPoints(const std::string& ligne);
-void tracerLigne(std::vector<std::vector<char>>& grille, int x0, int y0, int x1, int y1);
+void tracerLigne(std::vector<std::vector<char>>& grille, int x0, int y0, int x1, int y1, char texture);
 void imprimerGrille(const std::vector<Point>& points);

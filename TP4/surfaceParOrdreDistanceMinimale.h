@@ -2,7 +2,7 @@
 #include "strategieSurface.h"
 #include <cmath>
 
- //commande c2
+//commande c2
 class StrategieParDistanceMin : public StrategieSurface {
 public:
 
@@ -14,41 +14,60 @@ public:
     }
 
     void creerSurfaces(const std::vector<Point>& points,
-                       std::vector<std::pair<int,int>>& surfaces) override
+                       const std::vector<Nuage>& nuages,
+                       std::vector<Surface>& surfaces) override
     {
         surfaces.clear();
-        if (points.size() < 2) return;
-
-        std::vector<bool> visite(points.size(), false);
-        int courant = 0;
-        visite[courant] = true;
-
-        int first = 0;          // point de départ
-        int last  = 0;          // point suivant
-
-        for (int k = 0; k < (int)points.size() - 1; k++) {
-
-            int prochain = -1;
-            double meilleure = 0;
-
-            for (int i = 0; i < (int)points.size(); i++) {
-                if (visite[i]) continue;
-
-                double d = distanceMin(points[courant], points[i]);
-
-                if (prochain == -1 || d < meilleure) {
-                    prochain = i;
-                    meilleure = d;
+        
+        for (const auto& nuage : nuages) {
+    
+            std::vector<Point> pointsDuNuage;
+            for (int id : nuage.ids) {
+                for (const auto& p : points) {
+                    if (p.id == id) {
+                        pointsDuNuage.push_back(p);
+                        break;
+                    }
                 }
             }
+            
+            if (pointsDuNuage.size() < 2) continue;
 
-            surfaces.push_back({points[courant].id, points[prochain].id});
+            std::vector<bool> visite(pointsDuNuage.size(), false);
+            int courant = 0;
+            visite[courant] = true;
 
-            visite[prochain] = true;
-            courant = prochain;
-            last = prochain;
+            int first = 0;
+            int last  = 0;
+
+            for (int k = 0; k < (int)pointsDuNuage.size() - 1; k++) {
+
+                int prochain = -1;
+                double meilleure = 0;
+
+                for (int i = 0; i < (int)pointsDuNuage.size(); i++) {
+                    if (visite[i]) continue;
+
+                    double d = distanceMin(pointsDuNuage[courant], pointsDuNuage[i]);
+
+                    if (prochain == -1 || d < meilleure) {
+                        prochain = i;
+                        meilleure = d;
+                    }
+                }
+
+                surfaces.push_back(Surface(pointsDuNuage[courant].id, 
+                                          pointsDuNuage[prochain].id, 
+                                          nuage.texture));
+
+                visite[prochain] = true;
+                courant = prochain;
+                last = prochain;
+            }
+
+            surfaces.push_back(Surface(pointsDuNuage[last].id, 
+                                      pointsDuNuage[first].id, 
+                                      nuage.texture));
         }
-
-        surfaces.push_back({points[last].id, points[first].id});
     }
 };

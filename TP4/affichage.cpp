@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void tracerLigne(vector<vector<char>>& grille, int x0, int y0, int x1, int y1) {
+void tracerLigne(vector<vector<char>>& grille, int x0, int y0, int x1, int y1, char texture) {
 
     int lignes = abs(y1 - y0);
 
@@ -18,19 +18,36 @@ void tracerLigne(vector<vector<char>>& grille, int x0, int y0, int x1, int y1) {
     if (lignes == 0) {
         // On prend distance horizontale 
         lignes = abs(x1 - x0);
-        c = '_';  
+ 
+        if (texture == 'o') {
+            c = '-'; 
+        } else if (texture == '#') {
+            c = '_'; 
+        } else {
+            c = '-'; 
+        }
 
         for (int i = 0; i <= lignes; ++i) {
-            // On trace chaque point de la ligne, de gauche à droite ou de droite à gauche selon la direction.
             int x = (x0 < x1) ? x0 + i : x0 - i;
             if (y1 >= 0 && y1 < HAUTEUR && x >= 0 && x < LARGEUR)
                 grille[y1][x] = c;
         }
     } else {
-        // Si la ligne est verticale ou diagonale 
-        // diagonale montante (dx*dy > 0) : '/'
-        // diagonale descendante : '\'
-        c = (dx * dy > 0) ? '/' : '\\';
+       
+        if (texture == 'o') {
+            
+            if (dx == 0) {
+                c = '|';  
+            } else {
+                c = (dx * dy > 0) ? '/' : '\\';  
+            }
+        } else if (texture == '#') {
+            
+            c = (dx * dy > 0) ? '/' : '\\';
+        } else {
+            // Par défaut
+            c = (dx * dy > 0) ? '/' : '\\';
+        }
 
         for (int i = 0; i <= lignes; ++i) {
             double t = (double)i / lignes;
@@ -50,9 +67,8 @@ void imprimerGrille(const vector<Point>& points) {
 
     // On trace une ligne entre le point 0 et 1.
     // TODO : Remplacer par un tracé selon la commande de l'utilisateur (c1 ou c2)
-
     if (points.size() >= 2) {
-    tracerLigne(grille, points[0].x, points[0].y, points[1].x, points[1].y);
+        tracerLigne(grille, points[0].x, points[0].y, points[1].x, points[1].y, 'o');
     }
 
     // On imprime la grille.

@@ -5,17 +5,36 @@
 
 class StrategieParOrdreID : public StrategieSurface {
 public:
-   void creerSurfaces(const std::vector<Point>& points,
-                   std::vector<std::pair<int,int>>& surfaces) override
-{
-    surfaces.clear();
-    if (points.size() < 2) return;
+    void creerSurfaces(const std::vector<Point>& points,
+                      const std::vector<Nuage>& nuages,
+                      std::vector<Surface>& surfaces) override
+    {
+        surfaces.clear();
+        
+        for (const auto& nuage : nuages) {
+            // Extraire les points du nuage selon leurs IDs
+            std::vector<Point> pointsDuNuage;
+            for (int id : nuage.ids) {
+                for (const auto& p : points) {
+                    if (p.id == id) {
+                        pointsDuNuage.push_back(p);
+                        break;
+                    }
+                }
+            }
+            
+            if (pointsDuNuage.size() < 2) continue;
+            
+            for (int i = 0; i < (int)pointsDuNuage.size() - 1; i++) {
+                surfaces.push_back(Surface(pointsDuNuage[i].id, 
+                                          pointsDuNuage[i+1].id, 
+                                          nuage.texture));
+            }
+            
 
-    for (int i = 0; i < (int)points.size() - 1; i++) {
-        surfaces.push_back({ points[i].id, points[i+1].id });
+            surfaces.push_back(Surface(pointsDuNuage.back().id, 
+                                      pointsDuNuage.front().id, 
+                                      nuage.texture));
+        }
     }
-
-    surfaces.push_back({ points.back().id, points.front().id });
-}
-
 };

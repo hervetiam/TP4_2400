@@ -1,10 +1,15 @@
+#ifndef COMMANDEABS_H
+#define COMMANDEABS_H
+
+using namespace std;
+
 class CommandeAbs
 {
 public: 
 	CommandeAbs() = default; 
-	virutal ~CommandeAbs() = default; 
-	virtual void excecute() = 0; 
-	virtual void redo() = 0;
-	virtual void undo() = 0;
+	virtual ~CommandeAbs() = default; 
+	virtual void execute() = 0; 
+	virtual void cancel() = 0;
 
 };
+#endif

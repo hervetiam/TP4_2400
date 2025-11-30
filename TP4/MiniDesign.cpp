@@ -5,10 +5,15 @@
 #include "surfaceParOrdreDistanceMinimale.h"
 #include "affichageOrtheseParTexture.h"
 #include "affichageOrtheseParID.h"
+#include "CommandeDeplacer.h"
+#include "CommandeFusionner.h"
+#include "CommandeSupprimer.h"
+#include "Invoker.h"
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
+
 
 using namespace std;
 
@@ -44,33 +49,7 @@ void fusionnerPoints(vector<Point>& points,
     nuages.push_back(n);
 }
 
-void deplacerPoint(vector<Point>& points)
-{
-    string ligne;
-    int id, x, y;
 
-    cout << "ID du point à déplacer: ";
-    getline(cin, ligne);
-
-    {
-        istringstream iss(ligne);
-        if (!(iss >> id)) return;
-    }
-
-    if (id < 0 || id >= (int)points.size()) return;
-
-    cout << "Nouvelle position (x y): ";
-    getline(cin, ligne);
-    {
-        istringstream iss(ligne);
-        if (!(iss >> x >> y)) return;
-    }
-
-    points[id].x = x;
-    points[id].y = y;
-
-    cout << "Point déplacé.\n";
-}
 
 void supprimerPoint(vector<Point>& points)
 {
@@ -95,6 +74,7 @@ void supprimerPoint(vector<Point>& points)
 
 int main(int argc, char* argv[]) {
     string args;
+    Invoker invoker;
     // On accepte des points en entrée.
     if (argc > 1) {
         ostringstream oss;
@@ -175,7 +155,45 @@ int main(int argc, char* argv[]) {
         }
 
         else if (cmd == "d") {
-            deplacerPoint(points);
+            string ligne;
+            int id, x, y;
+
+            cout << "ID du point à déplacer: ";
+            getline(cin, ligne);
+            {
+                istringstream iss(ligne);
+                if (!(iss >> id)) {
+                    cout << "ID invalide.\n";
+                    continue;  // Retour au menu
+                }
+            }
+
+            if (id < 0 || id >= (int)points.size()) {
+                cout << "ID hors limites.\n";
+                continue;
+            }
+
+            cout << "Nouvelle position (x y): ";
+            getline(cin, ligne);
+            {
+                istringstream iss(ligne);
+                if (!(iss >> x >> y)) {
+                    cout << "Position invalide.\n";
+                    continue;
+                }
+            }
+
+
+            CommandeAbs* cmd = new  CommandeDeplacer(points , id , x , y);
+            invoker.execute(cmd);
+        }
+
+        else if (cmd == "u") {
+            invoker.undo();
+        }
+
+        else if (cmd == "r") {
+            invoker.redo();
         }
         
         else if (cmd == "c1") {

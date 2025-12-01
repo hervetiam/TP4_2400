@@ -6,7 +6,6 @@
 #include "affichageOrtheseParTexture.h"
 #include "affichageOrtheseParID.h"
 #include "CommandeDeplacer.h"
-#include "CommandeFusionner.h"
 #include "CommandeSupprimer.h"
 #include "Invoker.h"
 #include <iostream>
@@ -47,28 +46,6 @@ void fusionnerPoints(vector<Point>& points,
     }
 
     nuages.push_back(n);
-}
-
-
-
-void supprimerPoint(vector<Point>& points)
-{
-    string ligne;
-    int id;
-
-    cout << "ID du point à supprimer: ";
-    getline(cin, ligne);
-
-    istringstream iss(ligne);
-    if (!(iss >> id)) return;
-    if (id < 0 || id >= (int)points.size()) return;
-
-    points.erase(points.begin() + id);
-
-    for (int i = 0; i < (int)points.size(); i++) {
-        points[i].id = i;
-    }
-
 }
 
 
@@ -164,7 +141,7 @@ int main(int argc, char* argv[]) {
                 istringstream iss(ligne);
                 if (!(iss >> id)) {
                     cout << "ID invalide.\n";
-                    continue;  // Retour au menu
+                    continue;  
                 }
             }
 
@@ -208,7 +185,19 @@ int main(int argc, char* argv[]) {
             delete strategie;
         }        
         else if (cmd == "s") {
-            supprimerPoint(points);
+
+            string ligne;
+            int id;
+
+            cout << "ID du point à supprimer: ";
+            getline(cin, ligne);
+
+            istringstream iss(ligne);
+            cout << "ID invalide.\n";
+            if (!(iss >> id)) continue;
+            
+            CommandeAbs* cmd = new CommandeSupprimer(points , id);
+            invoker.execute(cmd);
         }
 
     }

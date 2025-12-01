@@ -4,8 +4,6 @@
 #include <sstream>
 #include <algorithm>
 
-using namespace std;
-
 void tracerLigne(vector<vector<char>>& grille, int x0, int y0, int x1, int y1, char texture) {
 
     int lignes = abs(y1 - y0);

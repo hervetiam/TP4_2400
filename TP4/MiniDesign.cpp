@@ -1,3 +1,4 @@
+#include "ElementAbs.h" 
 #include "affichage.h"
 #include "nuage.h"
 #include "surface.h"
@@ -16,37 +17,74 @@
 
 using namespace std;
 
-void fusionnerPoints(vector<Point>& points,
-                     vector<Nuage>& nuages,
-                     vector<char>& texturesNuages,
-                     int& prochainNuage)
+
+void fusionnerPointsOuNuages(std::vector<Point>& points,
+    std::vector<Nuage>& nuages,
+    std::vector<char>& texturesNuages,
+    int& prochainNuage)
 {
     if (prochainNuage >= (int)texturesNuages.size()) {
-        cout << "Plus de textures disponibles.\n";
+        std::cout << "Plus de textures disponibles.\n";
         return;
     }
 
     char tex = texturesNuages[prochainNuage++];
-    Nuage n(tex);
+    Nuage nouveauNuage(tex);
 
-    cout << "IDs des points à fusionner dans un nuage (ex: 0 2 4): ";
-    string ligne;
-    getline(cin, ligne);
-    istringstream iss(ligne);
+    std::cout << "IDs de points/nuages à fusionner (ex: 0 2 5): ";
+    std::string ligne;
+    std::getline(std::cin, ligne);
 
-    int id;
-    while (iss >> id) {
-        if (id < 0 || id >= (int)points.size()) continue;
+    std::istringstream iss(ligne);
+    std::string token;
 
-        // On applique la texture au point
-        points[id].textures.push_back(tex);
+    while (iss >> token) {
+        
+        if (token.length() > 0 && std::isdigit(token[0])) {
+            int id = std::stoi(token);
 
-        // On enregistre l'ID dans le nuage
-        n.ids.push_back(id);
+            if (id >= 0 && id < (int)points.size()) {
+                
+                nouveauNuage.ajouterElement(&points[id]);
+
+                
+                points[id].textures += tex;
+            }
+        }
+        
+        else if (token.length() == 1) {
+            char textureNuage = token[0];
+
+         
+            for (Nuage& nuage : nuages) {
+                if (nuage.texture == textureNuage) {
+                    
+                    nouveauNuage.ajouterElement(&nuage);
+
+                    
+                    for (int pointId : nuage.ids) {
+                        if (pointId >= 0 && pointId < (int)points.size()) {
+                            points[pointId].textures += tex;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
     }
 
-    nuages.push_back(n);
+   
+    if (!nouveauNuage.ids.empty()) {
+        nuages.push_back(nouveauNuage);
+    }
+    else {
+        
+        prochainNuage--;
+    }
 }
+
+
+
 
 
 int main(int argc, char* argv[]) {
@@ -128,7 +166,7 @@ int main(int argc, char* argv[]) {
             delete affichage;
         }
         else if (cmd == "f") {
-            fusionnerPoints(points, nuages, texturesNuages, prochainNuage);
+            fusionnerPointsOuNuages(points, nuages, texturesNuages, prochainNuage);
         }
 
         else if (cmd == "d") {

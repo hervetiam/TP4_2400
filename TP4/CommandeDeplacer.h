@@ -1,7 +1,7 @@
 #ifndef COMMANDEDEPLACER_H
 #define COMMANDEDEPLACER_H
 #include "commandeAbs.h"
-#include "nuage.h"
+#include "affichage.h"
 #include <vector>
 
 using namespace std;

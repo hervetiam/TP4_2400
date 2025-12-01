@@ -1,7 +1,7 @@
 #ifndef COMMANDESUPPRIMER_H
 #define COMMANDESUPPRIMER_H
 #include "commandeAbs.h"
-#include "nuage.h"
+#include "affichage.h"
 #include <vector>
 
 using namespace std;

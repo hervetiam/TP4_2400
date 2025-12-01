@@ -193,9 +193,17 @@ int main(int argc, char* argv[]) {
             getline(cin, ligne);
 
             istringstream iss(ligne);
-            cout << "ID invalide.\n";
-            if (!(iss >> id)) continue;
+            if (!(iss >> id))
+            {   
+                cout << "ID invalide.\n";
+                continue;
+            }
             
+            if (id < 0 || id >= (int)points.size()) {
+                cout << "ID hors limites.\n";
+                continue;
+            }
+
             CommandeAbs* cmd = new CommandeSupprimer(points , id);
             invoker.execute(cmd);
         }

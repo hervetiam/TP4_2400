@@ -2,7 +2,8 @@
 
 CommandeSupprimer::CommandeSupprimer(vector<Point>& points, int id) :
 	m_points(points),
-	m_id(id)
+	m_id(id),
+    m_positionOriginale(id)
 {
 };
 

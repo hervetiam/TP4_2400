@@ -1,20 +1,20 @@
-#pragma once
-#include <vector>
-#include <string>
-#include "ElementAbs.h"
-#include <algorithm>
+#ifndef NUAGE_H
+#define NUAGE_H
 
+#include <vector>
+#include "ElementAbs.h"
 
 class Nuage : public ElementAbs {
 public:
+    int id;
     char texture;
-    std::vector<int> ids;  
-    std::vector<char> nuagesEnfants;
-    Nuage(char t) : texture(t) {}
+    std::vector<int> ids;
+    std::vector<int> enfantsIDs;
 
+    Nuage(char t, int idNuage) : id(idNuage), texture(t) {}
 
     std::vector<int> obtenirIdsPoints() const override {
-        return ids; 
+        return ids;
     }
 
     char obtenirTexture() const override {
@@ -22,23 +22,8 @@ public:
     }
 
     bool estComposite() const override {
-        return true; 
+        return true;
     }
-
-    
-    void ajouterElement(const ElementAbs* element) {
-        std::vector<int> nouveauxIds = element->obtenirIdsPoints();
-        for (int id : nouveauxIds) {
-            
-            if (std::find(ids.begin(), ids.end(), id) == ids.end()) {
-                ids.push_back(id);
-            }
-        }
-
-        
-        if (element->estComposite()) {
-            nuagesEnfants.push_back(element->obtenirTexture());
-        }
-    }
-
 };
+
+#endif
